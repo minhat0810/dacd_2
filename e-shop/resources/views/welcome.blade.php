@@ -613,7 +613,34 @@
             $(document).ready(function() {
                 $("#bookingForm").submit(function(event) {
                     event.preventDefault(); // Ngăn chặn reload trang
+                    // Lấy giá trị từ form
+        let appointmentDate = $("input[name='appointment_date']").val(); // 2025/05/28
+        let timeStart = $("input[name='appointment_time_start']").val(); // 11:12PM
+        let timeEnd = $("input[name='appointment_time_end']").val(); // 01:12PM
 
+        // Chuyển đổi ngày: 2025/05/28 -> 2025-05-28
+        let formattedDate = appointmentDate.replace(/\//g, '-');
+
+        // Hàm chuyển đổi giờ từ 12h (AM/PM) sang 24h
+        function convertTo24Hour(time) {
+            let [hours, minutes] = time.match(/(\d+):(\d+)/).slice(1);
+            let period = time.includes("PM") ? "PM" : "AM";
+            hours = parseInt(hours);
+            minutes = parseInt(minutes);
+
+            if (period === "PM" && hours !== 12) hours += 12;
+            if (period === "AM" && hours === 12) hours = 0;
+
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00.000`;
+        }
+
+        // Chuyển đổi giờ sang định dạng 24h
+        let formattedTimeStart = convertTo24Hour(timeStart); // 11:12PM -> 23:12:00.000
+        let formattedTimeEnd = convertTo24Hour(timeEnd);     // 01:12PM -> 13:12:00.000
+
+        // Ghép ngày và giờ
+        let dtStart = `${formattedDate} ${formattedTimeStart}`; // 2025-05-28 23:12:00.000
+        let dtEnd = `${formattedDate} ${formattedTimeEnd}`;     // 2025-05-28 13:12:00.000
                     let formData = {
                         svClass: "ServiceAppointment",
                         svName: "SvNew",

@@ -1,0 +1,143 @@
+*{
+    margin: 0;
+}
+.header{
+    background-color: #b8b6b6;
+    /* background: linear-gradient(rgb(255, 255, 255), rgb(196, 192, 241)); */
+    position: relative;
+    margin-right: 10px;
+    width: 100%;
+   box-shadow: 1px 1px black;
+    padding: 10px;
+}
+.header .container{
+    display: flex;
+    margin-left: 5rem;
+}
+.logo{
+   font-size: 20px;
+}
+.logo span{
+    text-shadow: 0 1px cyan;
+    font-style: italic;
+    font-weight: bold;
+}
+.bar{
+    background: rgb(255, 255, 255);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 1.7rem 20rem;
+}
+.search-container input {
+  
+    font-size: 15px;
+   margin-left: 30px;
+    margin-top: 15px;
+    width: 30rem;
+    height:25px;
+   
+}
+.search-btn i{
+    padding: 10px;
+        margin-left: 0.2rem;
+        margin-top: 10px;
+ 
+}
+.search-btn i:hover {
+ cursor: pointer;
+    background: rgb(157, 167, 223);
+    border-radius: 20px;
+}
+.cart i {
+    padding: 10px;
+        margin-left: 0.2rem;
+        margin-top: 10px;
+}
+
+.cart i:hover {
+    cursor: pointer;
+    background: rgb(157, 167, 223);
+    border-radius: 20px;
+}
+.icons {
+     padding: 10px;
+        margin-left: 30px;
+        margin-top: 10px;
+       display: none;
+}
+.nav {
+    background: linear-gradient(rgb(255, 255, 255), rgb(196, 192, 241));
+    padding: 1rem;
+    box-shadow: 0 10px 20px black;
+    margin-left: 25rem;
+}
+
+.nav a {
+    text-decoration: none;
+    color: black;
+    margin-left: 2rem;
+    font-size: 18px;
+}
+
+/*-----------------------------------*\
+#RESPONSIVE
+\*-----------------------------------*/
+@media (max-width: 991px) {
+    html {
+        font-size: 55%;
+    }
+
+    .header {
+        padding: 1.5rem 2.5rem;
+    }
+
+    /* .home .slide{
+        background-size: cover;
+    } */
+}
+@media (max-width: 768px) {
+    .header .logo{
+        max-width: 200px;
+    }
+         .icons {
+             display: inline;
+            cursor: pointer;
+                background: rgb(157, 167, 223);
+                border-radius: 20px;
+         }
+    .header .nav {
+        position: absolute;
+        top: 99%;
+        left: 0;
+        right: 0;
+        background: rgb(255, 255, 255);
+        border-top: 0.2rem solid black;
+        border-bottom: 0.2rem solid black;
+        padding: 0.2rem;
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    }
+
+          .header .nav.active {
+              clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    
+          }
+
+    .header .nav a {
+        display: block;
+        font-size: 2rem;
+        margin: 3rem 1rem;
+    }
+    .header .search-container input{
+        max-width: 200px;
+    }
+
+    /* .shop .box-container .box {
+        margin-left: 0rem;
+    }
+
+    .cart {
+        top: 10rem;
+        
+    } */
+}

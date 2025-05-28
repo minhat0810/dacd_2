@@ -601,22 +601,28 @@
     <script src="{{asset('public/frontend/js/main.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $(".showBookingForm").click(function() {
-                $("#bookingFormContainer").fadeIn();
-            });
+$(document).ready(function() {
+    // Cấu hình Flatpickr
+    flatpickr("#appointment_date", {
+        dateFormat: "Y/m/d", // Định dạng YYYY/MM/DD
+        minDate: "today", // Chỉ cho phép chọn từ hôm nay trở đi
+    });
 
-            $("#closeBookingForm").click(function() {
-                $("#bookingFormContainer").fadeOut();
-            });
+    $(".showBookingForm").click(function() {
+        $("#bookingFormContainer").fadeIn();
+    });
 
-            $(document).ready(function() {
-                $("#bookingForm").submit(function(event) {
-                    event.preventDefault(); // Ngăn chặn reload trang
-                    // Lấy giá trị từ form
+    $("#closeBookingForm").click(function() {
+        $("#bookingFormContainer").fadeOut();
+    });
+
+    $("#bookingForm").submit(function(event) {
+        event.preventDefault(); // Ngăn chặn reload trang
+
+        // Lấy giá trị từ form
         let appointmentDate = $("input[name='appointment_date']").val(); // 2025/05/28
-        let timeStart = $("input[name='appointment_time_start']").val(); // 11:12PM
-        let timeEnd = $("input[name='appointment_time_end']").val(); // 01:12PM
+        let timeStart = $("input[name='appointment_time_start']").val(); // 12:35PM
+        let timeEnd = $("input[name='appointment_time_end']").val(); // 01:00PM
 
         // Chuyển đổi ngày: 2025/05/28 -> 2025-05-28
         let formattedDate = appointmentDate.replace(/\//g, '-');
@@ -635,60 +641,62 @@
         }
 
         // Chuyển đổi giờ sang định dạng 24h
-        let formattedTimeStart = convertTo24Hour(timeStart); // 11:12PM -> 23:12:00.000
-        let formattedTimeEnd = convertTo24Hour(timeEnd);     // 01:12PM -> 13:12:00.000
+        let formattedTimeStart = convertTo24Hour(timeStart); // 12:35PM -> 12:35:00.000
+        let formattedTimeEnd = convertTo24Hour(timeEnd);     // 01:00PM -> 13:00:00.000
 
         // Ghép ngày và giờ
-        let dtStart = `${formattedDate} ${formattedTimeStart}`; // 2025-05-28 23:12:00.000
-        let dtEnd = `${formattedDate} ${formattedTimeEnd}`;     // 2025-05-28 13:12:00.000
-                    let formData = {
-                        svClass: "ServiceAppointment",
-                        svName: "SvNew",
-                        dto: {
-                            title: "",
-                            description: "",
-                            receiver: JSON.stringify({
-                                name: $("input[name='name']").val(),
-                                phone: $("input[name='phone']").val(),
-                                email: $("input[name='email']").val(),
-                                address: $("input[name='address']").val(),
-                                gender: $("input[name='gender']:checked").val(),
-                            }),
-                            dtStart: $("input[name='appointment_date']").val(),
-                            timeStart: $("input[name='appointment_time_start']").val(),
-                            dtEnd: $("input[name='appointment_date']").val(),
-                            timeEnd: $("input[name='appointment_time_end']").val(),
-                            note: $("input[name='symptom']").val()
-                        }
+        let dtStart = `${formattedDate} ${formattedTimeStart}`; // 2025-05-28 12:35:00.000
+        let dtEnd = `${formattedDate} ${formattedTimeEnd}`;     // 2025-05-28 13:00:00.000
 
-                    };
+        let formData = {
+            svClass: "ServiceAppointment",
+            svName: "SvNew",
+            dto: {
+                title: "",
+                description: "",
+                receiver: JSON.stringify({
+                    name: $("input[name='name']").val(),
+                    phone: $("input[name='phone']").val(),
+                    email: $("input[name='email']").val(),
+                    address: $("input[name='address']").val(),
+                    gender: $("input[name='gender']:checked").val(),
+                }),
+                dtStart: dtStart,
+                timeStart: timeStart,
+                dtEnd: dtEnd,
+                timeEnd: timeEnd,
+                note: $("input[name='symptom']").val()
+            }
+        };
 
-                    $.ajax({
-                        url: "http://192.168.6.232:8080/cld",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(formData),
-                        success: function(response) {
-                            response.receiver = JSON.parse(response.receiver)
-                            console.log(JSON.parse(response.receiver))
-                            alert("Đặt lịch thành công!");
-                            $("#bookingFormContainer").fadeOut();
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Có lỗi xảy ra, vui lòng thử lại!");
-                        }
-                    });
-                });
-            });
-
-        });
-        $(document).mouseup(function(e) {
-            let container = $("#bookingFormContainer");
-            if (!container.is(e.target) && container.has(e.target).length === 0) {
-                container.fadeOut();
+        $.ajax({
+            url: "http://192.168.6.232:8080/cld",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(formData),
+            success: function(response) {
+                response.receiver = JSON.parse(response.receiver);
+                console.log(response.receiver);
+                alert("Đặt lịch thành công!");
+                $("#bookingFormContainer").fadeOut();
+            },
+            error: function(xhr, status, error) {
+                console.log("Error:", xhr, status, error); // Log chi tiết lỗi
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
             }
         });
-    </script>
+    });
+
+    $(document).mouseup(function(e) {
+        let container = $("#bookingFormContainer");
+        let calendar = $(".flatpickr-calendar");
+        // Không đóng nếu click vào container hoặc lịch
+        if (!container.is(e.target) && container.has(e.target).length === 0 && !calendar.is(e.target) && calendar.has(e.target).length === 0) {
+            container.fadeOut();
+        }
+    });
+});
+</script>
 
 </body>
 
